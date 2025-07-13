@@ -1,26 +1,25 @@
-const express = require('express');
-const axios = require('axios');
+const express = require("express");
 const app = express();
-
 const PORT = process.env.PORT || 3000;
-const BASE_URL = 'https://api.binance.com/api/v3/klines';
 
-app.get('/klines', async (req, res) => {
-  const { symbol, interval, limit } = req.query;
-  try {
-    const response = await axios.get(BASE_URL, {
-      params: { symbol, interval, limit }
-    });
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ error: error.toString() });
-  }
+app.use(express.json());
+
+app.get("/", (req, res) => {
+ res.send("Binance Proxy is running!");
 });
 
-app.get('/', (req, res) => {
-  res.send('✅ Binance Proxy is Running');
+app.post("/indicator", (req, res) => {
+ const { price, rsi, macd } = req.body;
+
+ console.log("Received indicator data:", { price, rsi, macd });
+
+ // Placeholder response — you'll replace this with strategy logic soon
+ res.json({
+   strategy: "hold",
+   received: { price, rsi, macd }
+ });
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Binance Proxy is Running on port ${PORT}`);
+ console.log(`Server running on port ${PORT}`);
 });
